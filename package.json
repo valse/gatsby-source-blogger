@@ -1,0 +1,35 @@
+{
+  "name": "gatsby-source-blogger",
+  "version": "1.0.0",
+  "description": "Gatsby source plugin for building websites using Blogger as a data source",
+  "keywords": [
+    "gatsby",
+    "gatsby-plugin",
+    "gatsby-source-plugin",
+    "blogger",
+    "headless-cms"
+  ],
+  "scripts": {
+    "build": "babel src --out-dir . --ignore **/__tests__",
+    "format": "prettier --single-quote --write src/gatsby-node.js",
+    "prepare": "npm run build",
+    "watch": "babel -w src --out-dir . --ignore **/__tests__"
+  },
+  "main": "index.js",
+  "repository": "git@github.com:valse/gatsby-source-blogger.git",
+  "author": "Marco Valsecchi <marco.valsecchi@gmail.com> (https://marcovalsecchi.it/)",
+  "license": "MIT",
+  "dependencies": {
+    "googleapis": "^37.1.0",
+    "rehype-parse": "^6.0.0",
+    "rehype-remark": "^5.0.1",
+    "remark-stringify": "^6.0.4",
+    "unified": "^7.1.0"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.2.3",
+    "@babel/core": "^7.2.2",
+    "@babel/preset-env": "^7.3.1",
+    "prettier": "^1.16.3"
+  }
+}
