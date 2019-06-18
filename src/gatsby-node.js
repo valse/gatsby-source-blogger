@@ -21,18 +21,28 @@ exports.sourceNodes = async ({ actions, createNodeId }, { apiKey, blogId }) => {
   });
 
   let postResult;
+  let posts = [];
 
   try {
-    postResult = await blogger.posts.list({
+    let params = {
       blogId: blogId,
       maxResults: 500
-    });
+    };
+
+    do {
+      postResult = await blogger.posts.list(params);
+      if (postResult.data.nextPageToken) {
+        params = { ...params, pageToken: postResult.data.nextPageToken };
+      }
+      if (postResult.data.items) {
+        posts.push(...postResult.data.items);
+      }
+    } while (postResult.data.nextPageToken);
   } catch (err) {
     console.log("Error fetching posts", err);
   }
 
   const rePost = /^https?:\/\/(?:[^/]+)\/\d{4}\/\d{2}\/([^/][^.]+)\.html$/;
-  const posts = postResult.data.items;
 
   if (posts) {
     posts.forEach(post => {
@@ -51,9 +61,10 @@ exports.sourceNodes = async ({ actions, createNodeId }, { apiKey, blogId }) => {
               type: refactoredEntityTypes.post,
               mediaType: `text/markdown`,
               content: `---
-title: '${post.title.replace("'", "''")}'
-date: '${post.published}'
-slug: '${segments[1]}'
+title: >-
+  ${post.title}
+date: ${post.published}
+slug: ${segments[1]}
 ---
 
 ${md}`,
@@ -70,18 +81,28 @@ ${md}`,
   }
 
   let pageResult;
+  let pages = [];
 
   try {
-    pageResult = await blogger.pages.list({
+    let params = {
       blogId: blogId,
       maxResults: 500
-    });
+    };
+
+    do {
+      pageResult = await blogger.pages.list(params);
+      if (pageResult.data.nextPageToken) {
+        params = { ...params, pageToken: pageResult.data.nextPageToken };
+      }
+      if (pageResult.data.items) {
+        pages.push(...pageResult.data.items);
+      }
+    } while (pageResult.data.nextPageToken);
   } catch (err) {
     console.log("Error fetching pages", err);
   }
 
   const rePage = /^https?:\/\/(?:[^/]+)\/p\/([^/][^.]+)\.html$/;
-  const pages = pageResult.data.items;
 
   if (pages) {
     pages.forEach(page => {
@@ -100,9 +121,10 @@ ${md}`,
               type: refactoredEntityTypes.page,
               mediaType: `text/markdown`,
               content: `---
-  title: '${page.title.replace("'", "''")}'
-  date: '${page.published}'
-  slug: '${segments[1]}'
+  title: >-
+    ${page.title}
+  date: ${page.published}
+  slug: ${segments[1]}
   ---
 
   ${md}`,
