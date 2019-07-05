@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.1] - 2019-07-05
+
+### Bug Fixes
+
+- Fix processing pages, broken reference in forEach ([#2](https://github.com/valse/gatsby-source-blogger/pull/2))
+
 ## [1.1.0] - 2019-06-18
 
 ### Added
