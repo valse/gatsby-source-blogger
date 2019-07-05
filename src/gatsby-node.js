@@ -110,7 +110,7 @@ ${md}`,
         .use(parse)
         .use(rehype2remark)
         .use(stringify)
-        .process(post.content, function(err, md) {
+        .process(page.content, function(err, md) {
           if (err) console.log(err);
           const segments = rePage.exec(page.url);
           const gatsbyPage = Object.assign({ slug: segments[1] }, page, {
