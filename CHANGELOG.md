@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.2.0] - 2020-10-07
+
+### Added
+
+- Added the `featuredImage` field on post as local file
+- Added the `featuredImageUrl` field on front matter post as remote url
+- Bumped dependencies
+
 ## [1.1.1] - 2019-07-05
 
 ### Bug Fixes

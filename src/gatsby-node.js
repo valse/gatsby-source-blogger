@@ -4,6 +4,7 @@ const parse = require("rehype-parse");
 const rehype2remark = require("rehype-remark");
 const stringify = require("remark-stringify");
 const crypto = require("crypto");
+const { createRemoteFileNode } = require(`gatsby-source-filesystem`)
 
 const typePrefix = "blogger__";
 
@@ -12,7 +13,7 @@ const refactoredEntityTypes = {
   page: `${typePrefix}PAGE`
 };
 
-exports.sourceNodes = async ({ actions, createNodeId }, { apiKey, blogId }) => {
+exports.sourceNodes = async ({ cache, store, actions, createNodeId }, { apiKey, blogId }) => {
   const { createNode, setPluginStatus } = actions;
 
   const blogger = google.blogger({
@@ -26,7 +27,8 @@ exports.sourceNodes = async ({ actions, createNodeId }, { apiKey, blogId }) => {
   try {
     let params = {
       blogId: blogId,
-      maxResults: 500
+      maxResults: 500,
+      fetchImages: true
     };
 
     do {
@@ -45,8 +47,29 @@ exports.sourceNodes = async ({ actions, createNodeId }, { apiKey, blogId }) => {
   const rePost = /^https?:\/\/(?:[^/]+)\/\d{4}\/\d{2}\/([^/][^.]+)\.html$/;
 
   if (posts) {
-    posts.forEach(post => {
-      unified()
+    posts.forEach(async post => {
+      let featuredImageNode = null
+
+      if (post.images)
+      {
+        try {
+          featuredImageNode = await createRemoteFileNode({
+            url: post.images[0].url,
+            store,
+            cache,
+            createNode,
+            createNodeId,
+          })        
+        } catch (e) {
+          throw Error(e);
+        }
+      }      
+
+      if (featuredImageNode && featuredImageNode.ext !== ".gif") {
+        post.featuredImage___NODE = featuredImageNode.id
+      }
+
+      return unified()
         .use(parse)
         .use(rehype2remark)
         .use(stringify)
@@ -65,6 +88,7 @@ title: >-
   ${post.title}
 date: ${post.published}
 slug: ${segments[1]}
+featuredImageUrl: ${post.images ? post.images[0].url : null}
 ---
 
 ${md}`,
