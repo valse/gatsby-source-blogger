@@ -142,3 +142,6 @@ Your Blogger posts and pages are available in Markdown format too; thanks to [Ga
   }
 }
 ```
+
+### Post featured image
+By default, if available, the plugin download the post featured image and link it on the `featuredImage` node field and create the `featuredImageUrl` variable on the markdown front matter pointing to the original remote url.
