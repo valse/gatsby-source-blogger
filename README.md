@@ -56,6 +56,14 @@ The plugin maps all JSON fields documented in the [Blogger API Reference](https:
           totalItems
           selfLink
         }
+        featuredImage{
+          childImageSharp{
+            ...
+          }
+        }
+        images{
+          url
+        }
       }
     }
   }
@@ -123,6 +131,7 @@ Your Blogger posts and pages are available in Markdown format too; thanks to [Ga
             title
             date
             slug
+            featuredImageUrl
           }
           html
           excerpt
