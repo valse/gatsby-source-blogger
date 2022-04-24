@@ -1,9 +1,9 @@
-const { google } = require("googleapis");
-const unified = require("unified");
-const parse = require("rehype-parse");
-const rehype2remark = require("rehype-remark");
-const stringify = require("remark-stringify");
-const crypto = require("crypto");
+import crypto from "crypto";
+import { google } from "googleapis";
+import parse from "rehype-parse";
+import rehype2remark from "rehype-remark";
+import stringify from "remark-stringify";
+import unified from "unified";
 const { createRemoteFileNode } = require(`gatsby-source-filesystem`);
 
 const typePrefix = "blogger__";
