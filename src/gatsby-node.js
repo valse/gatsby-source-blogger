@@ -50,7 +50,7 @@ exports.sourceNodes = async (
   const rePost = /^https?:\/\/(?:[^/]+)\/\d{4}\/\d{2}\/([^/][^.]+)\.html$/;
 
   if (posts) {
-    for (const post of posts) {
+    for (let post of posts) {
       let featuredImageNode = null;
 
       if (post.images) {
@@ -71,7 +71,7 @@ exports.sourceNodes = async (
         post.featuredImage___NODE = featuredImageNode.id;
       }
 
-      return unified()
+      unified()
         .use(parse)
         .use(rehype2remark)
         .use(stringify)
@@ -131,7 +131,7 @@ ${md}`,
   const rePage = /^https?:\/\/(?:[^/]+)\/p\/([^/][^.]+)\.html$/;
 
   if (pages) {
-    for (page of pages) {
+    for (let page of pages) {
       unified()
         .use(parse)
         .use(rehype2remark)
