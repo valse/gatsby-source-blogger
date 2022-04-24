@@ -15,7 +15,7 @@ const refactoredEntityTypes = {
 
 exports.sourceNodes = async (
   { cache, store, actions, createNodeId },
-  { apiKey, blogId }
+  { apiKey, blogId, downloadImage = true }
 ) => {
   const { createNode, setPluginStatus } = actions;
 
@@ -31,7 +31,7 @@ exports.sourceNodes = async (
     let params = {
       blogId: blogId,
       maxResults: 500,
-      fetchImages: true,
+      fetchImages: downloadImage,
     };
 
     do {
@@ -53,12 +53,12 @@ exports.sourceNodes = async (
     for (let post of posts) {
       let featuredImageNode = null;
 
-      if (post.images) {
+      if (downloadImage && post.images) {
         let imageUrl = post.images[0].url;
-        const imageRegex = /https:\/\/bp\d+\.blogger.com/;
+        const reImage = /https:\/\/bp\d+\.blogger.com/;
 
-        if (imageRegex.test(imageUrl)) {
-          imageUrl = imageUrl.replace(imageRegex, "https://1.bp.blogspot.com");
+        if (reImage.test(imageUrl)) {
+          imageUrl = imageUrl.replace(reImage, "https://1.bp.blogspot.com");
         }
 
         try {

@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.3.0] - 2022-04-24
+
+### Added
+
+- Added the `downloadImage` option
+- Bumped dependencies
+
 ## [1.2.0] - 2020-10-07
 
 ### Added
