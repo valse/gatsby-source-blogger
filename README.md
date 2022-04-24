@@ -14,8 +14,9 @@ module.exports = {
     {
       resolve: 'gatsby-source-blogger',
       options: {
-        apiKey: 'your-api-key',
-        blogId: 'your-blog-id'
+          apiKey: 'your-api-key',
+          blogId: 'your-blog-id',
+          downloadImage: true
         }
       }
     }
