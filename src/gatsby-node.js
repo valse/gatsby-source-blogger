@@ -163,12 +163,12 @@ ${md}`,
 
           createNode(gatsbyPage);
         });
-
-      setPluginStatus({
-        status: {
-          lastFetched: Date.now(),
-        },
-      });
     }
   }
+
+  setPluginStatus({
+    status: {
+      lastFetched: Date.now(),
+    },
+  });
 };
