@@ -31,20 +31,22 @@ exports.sourceNodes = async (
     let params = {
       blogId: blogId,
       maxResults: 500,
-      fetchImages: downloadImage,
+      fetchImages: true,
     };
 
     do {
       postResult = await blogger.posts.list(params);
+
       if (postResult.data.nextPageToken) {
         params = { ...params, pageToken: postResult.data.nextPageToken };
       }
+
       if (postResult.data.items) {
         posts.push(...postResult.data.items);
       }
     } while (postResult.data.nextPageToken);
   } catch (err) {
-    console.error("Error fetching posts", err);
+    console.error("Error fetching posts:", err);
   }
 
   const rePost = /^https?:\/\/(?:[^/]+)\/\d{4}\/\d{2}\/([^/][^.]+)\.html$/;
@@ -70,7 +72,7 @@ exports.sourceNodes = async (
             createNodeId,
           });
         } catch (err) {
-          console.error("Error downloading post image", err);
+          console.error("Error downloading post image:", err);
         }
       }
 
@@ -124,15 +126,17 @@ ${md}`,
 
     do {
       pageResult = await blogger.pages.list(params);
+
       if (pageResult.data.nextPageToken) {
         params = { ...params, pageToken: pageResult.data.nextPageToken };
       }
+
       if (pageResult.data.items) {
         pages.push(...pageResult.data.items);
       }
     } while (pageResult.data.nextPageToken);
   } catch (err) {
-    console.error("Error fetching pages", err);
+    console.error("Error fetching pages:", err);
   }
 
   const rePage = /^https?:\/\/(?:[^/]+)\/p\/([^/][^.]+)\.html$/;
