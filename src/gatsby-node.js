@@ -3,7 +3,7 @@ import { google } from "googleapis";
 import parse from "rehype-parse";
 import rehype2remark from "rehype-remark";
 import stringify from "remark-stringify";
-import unified from "unified";
+import { unified } from "unified";
 const { createRemoteFileNode } = require(`gatsby-source-filesystem`);
 
 const typePrefix = "blogger__";
