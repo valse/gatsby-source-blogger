@@ -4,21 +4,24 @@ const parse = require("rehype-parse");
 const rehype2remark = require("rehype-remark");
 const stringify = require("remark-stringify");
 const crypto = require("crypto");
-const { createRemoteFileNode } = require(`gatsby-source-filesystem`)
+const { createRemoteFileNode } = require(`gatsby-source-filesystem`);
 
 const typePrefix = "blogger__";
 
 const refactoredEntityTypes = {
   post: `${typePrefix}POST`,
-  page: `${typePrefix}PAGE`
+  page: `${typePrefix}PAGE`,
 };
 
-exports.sourceNodes = async ({ cache, store, actions, createNodeId }, { apiKey, blogId }) => {
+exports.sourceNodes = async (
+  { cache, store, actions, createNodeId },
+  { apiKey, blogId }
+) => {
   const { createNode, setPluginStatus } = actions;
 
   const blogger = google.blogger({
     version: "v3",
-    auth: apiKey
+    auth: apiKey,
   });
 
   let postResult;
@@ -28,7 +31,7 @@ exports.sourceNodes = async ({ cache, store, actions, createNodeId }, { apiKey, 
     let params = {
       blogId: blogId,
       maxResults: 500,
-      fetchImages: true
+      fetchImages: true,
     };
 
     do {
@@ -41,17 +44,16 @@ exports.sourceNodes = async ({ cache, store, actions, createNodeId }, { apiKey, 
       }
     } while (postResult.data.nextPageToken);
   } catch (err) {
-    console.log("Error fetching posts", err);
+    console.error("Error fetching posts", err);
   }
 
   const rePost = /^https?:\/\/(?:[^/]+)\/\d{4}\/\d{2}\/([^/][^.]+)\.html$/;
 
   if (posts) {
-    posts.forEach(async post => {
-      let featuredImageNode = null
+    for (const post of posts) {
+      let featuredImageNode = null;
 
-      if (post.images)
-      {
+      if (post.images) {
         try {
           featuredImageNode = await createRemoteFileNode({
             url: post.images[0].url,
@@ -59,21 +61,21 @@ exports.sourceNodes = async ({ cache, store, actions, createNodeId }, { apiKey, 
             cache,
             createNode,
             createNodeId,
-          })        
-        } catch (e) {
-          throw Error(e);
+          });
+        } catch (err) {
+          console.error("Error downloading post image", err);
         }
-      }      
+      }
 
       if (featuredImageNode && featuredImageNode.ext !== ".gif") {
-        post.featuredImage___NODE = featuredImageNode.id
+        post.featuredImage___NODE = featuredImageNode.id;
       }
 
       return unified()
         .use(parse)
         .use(rehype2remark)
         .use(stringify)
-        .process(post.content, function(err, md) {
+        .process(post.content, function (err, md) {
           if (err) console.log(err);
           const segments = rePost.exec(post.url);
           const gatsbyPost = Object.assign({ slug: segments[1] }, post, {
@@ -95,13 +97,13 @@ ${md}`,
               contentDigest: crypto
                 .createHash(`md5`)
                 .update(JSON.stringify(post))
-                .digest(`hex`)
-            }
+                .digest(`hex`),
+            },
           });
 
           createNode(gatsbyPost);
         });
-    });
+    }
   }
 
   let pageResult;
@@ -110,7 +112,7 @@ ${md}`,
   try {
     let params = {
       blogId: blogId,
-      maxResults: 500
+      maxResults: 500,
     };
 
     do {
@@ -123,18 +125,18 @@ ${md}`,
       }
     } while (pageResult.data.nextPageToken);
   } catch (err) {
-    console.log("Error fetching pages", err);
+    console.error("Error fetching pages", err);
   }
 
   const rePage = /^https?:\/\/(?:[^/]+)\/p\/([^/][^.]+)\.html$/;
 
   if (pages) {
-    pages.forEach(page => {
+    for (page of pages) {
       unified()
         .use(parse)
         .use(rehype2remark)
         .use(stringify)
-        .process(page.content, function(err, md) {
+        .process(page.content, function (err, md) {
           if (err) console.log(err);
           const segments = rePage.exec(page.url);
           const gatsbyPage = Object.assign({ slug: segments[1] }, page, {
@@ -155,8 +157,8 @@ ${md}`,
               contentDigest: crypto
                 .createHash(`md5`)
                 .update(JSON.stringify(page))
-                .digest(`hex`)
-            }
+                .digest(`hex`),
+            },
           });
 
           createNode(gatsbyPage);
@@ -164,9 +166,9 @@ ${md}`,
 
       setPluginStatus({
         status: {
-          lastFetched: Date.now()
-        }
+          lastFetched: Date.now(),
+        },
       });
-    });
+    }
   }
 };
