@@ -1,6 +1,6 @@
 {
   "name": "gatsby-source-blogger",
-  "version": "1.2.7",
+  "version": "1.2.9",
   "description": "Gatsby source plugin for building websites using Blogger as a data source",
   "keywords": [
     "gatsby",

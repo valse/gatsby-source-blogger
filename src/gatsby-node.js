@@ -54,9 +54,16 @@ exports.sourceNodes = async (
       let featuredImageNode = null;
 
       if (post.images) {
+        let imageUrl = post.images[0].url;
+        const imageRegex = /https:\/\/bp\d+\.blogger.com/;
+
+        if (imageRegex.test(imageUrl)) {
+          imageUrl = imageUrl.replace(imageRegex, "https://1.bp.blogspot.com");
+        }
+
         try {
           featuredImageNode = await createRemoteFileNode({
-            url: post.images[0].url,
+            url: imageUrl,
             store,
             cache,
             createNode,
